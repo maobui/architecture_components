@@ -2,6 +2,7 @@ package com.me.bui.architecturecomponents;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -15,9 +16,11 @@ import android.support.annotation.NonNull;
  */
 public class MainViewModel extends ViewModel {
 
-    public ObservableField<String> mData = new ObservableField<>();
+    public MutableLiveData<String> mData = new MutableLiveData<>();
 
     public ObservableBoolean isLoading = new ObservableBoolean(false);
+
+    public SingleLiveEvent<String> toasText = new SingleLiveEvent<>();
 
     private DataModel mDataModel;
 
@@ -31,7 +34,8 @@ public class MainViewModel extends ViewModel {
         mDataModel.retrieveData(new DataModel.onDataReadyCallback() {
             @Override
             public void onDataReady(String data) {
-                mData.set(data);
+                mData.setValue(data);
+                toasText.setValue("Data change call in SingleLiveEvent.");
                 isLoading.set(false);
             }
         });
