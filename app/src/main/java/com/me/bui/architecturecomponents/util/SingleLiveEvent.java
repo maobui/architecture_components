@@ -1,4 +1,4 @@
-package com.me.bui.architecturecomponents;
+package com.me.bui.architecturecomponents.util;
 
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
