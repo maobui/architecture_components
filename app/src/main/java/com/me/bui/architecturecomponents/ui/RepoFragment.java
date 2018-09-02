@@ -80,18 +80,18 @@ public class RepoFragment extends Fragment {
         viewModel.getRepos().observe(this, new Observer<List<Repo>>() {
             @Override
             public void onChanged(@Nullable List<Repo> repos) {
-                repoAdapter.swapItems(repos);
+                if(repos != null) {
+                    repoAdapter.swapItems(repos);
+                }
+                viewModel.isLoading.set(false);
             }
         });
     }
 
     private void doSearch() {
         String query = binding.edtQuery.getText().toString();
-        if (TextUtils.isEmpty(query)) {
-            repoAdapter.clearItems();
-            return;
-        }
         viewModel.searchRepo(query);
+        viewModel.isLoading.set(true);
         dismissKeyboard();
     }
 

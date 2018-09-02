@@ -1,5 +1,6 @@
 package com.me.bui.architecturecomponents.data;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
@@ -21,12 +22,13 @@ public class DataModel {
 
     private GithubService githubService = RetrofitManager.getAPI();
 
-    public void searchRepo(String query, final onDataReadyCallback callback) {
+    public MutableLiveData<List<Repo>> searchRepo(String query) {
+        final MutableLiveData<List<Repo>> repos = new MutableLiveData<>();
         githubService.searchRepos(query)
                 .enqueue(new Callback<RepoSearchResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<RepoSearchResponse> call, @NonNull Response<RepoSearchResponse> response) {
-                        callback.onDataReady(response.body().getItems());
+                        repos.setValue(response.body().getItems());
                     }
 
                     @Override
@@ -34,9 +36,6 @@ public class DataModel {
                         // TODO: error handle
                     }
                 });
-    }
-
-    public interface onDataReadyCallback {
-        void onDataReady(List<Repo> data);
+        return repos;
     }
 }
