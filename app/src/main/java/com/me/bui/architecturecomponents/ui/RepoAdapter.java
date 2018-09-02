@@ -31,6 +31,11 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder
             super(binding.getRoot());
             this.binding = binding;
         }
+
+        void bind( Repo repo) {
+            binding.setRepo(repo);
+            binding.executePendingBindings();
+        }
     }
 
     @Override
@@ -43,12 +48,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder
     @Override
     public void onBindViewHolder(RepoViewHolder holder, int position) {
         Repo repo = items.get(position);
-        Glide.with(holder.itemView.getContext())
-                .load(repo.owner.avatarUrl)
-                .into(holder.binding.ownerAvatar);
-        holder.binding.name.setText(repo.fullName);
-        holder.binding.desc.setText(repo.description);
-        holder.binding.stars.setText(""+repo.stars);
+        holder.bind(repo);
     }
 
     @Override

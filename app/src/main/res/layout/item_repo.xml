@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="repo"
+            type="com.me.bui.architecturecomponents.data.model.Repo"/>
+    </data>
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +24,8 @@
                 android:layout_marginStart="8dp"
                 android:scaleType="fitCenter"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:imageUrl="@{repo.owner.avatarUrl}"/>
 
             <TextView
                 android:id="@+id/name"
@@ -29,7 +35,7 @@
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toEndOf="@+id/ownerAvatar"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="repository name" />
+                tools:text="@{repo.fullName}" />
 
             <TextView
                 android:id="@+id/desc"
@@ -40,7 +46,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ownerAvatar"
                 tools:layout_editor_absoluteX="@dimen/default_margin"
-                tools:text="this is some description more description more description" />
+                tools:text="@{repo.description}" />
 
             <TextView
                 android:id="@+id/stars"
@@ -52,7 +58,7 @@
                 android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="5" />
+                tools:text="@{String.valueOf(repo.stars)}" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
