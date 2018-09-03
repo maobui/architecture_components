@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,10 @@ import com.me.bui.architecturecomponents.viewmodel.GithubViewModelFactory;
 import com.me.bui.architecturecomponents.viewmodel.RepoViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import javax.inject.Inject;
+
+import dagger.android.support.AndroidSupportInjection;
 
 /**
  * Created by mao.bui on 9/1/2018.
@@ -33,9 +35,11 @@ public class RepoFragment extends Fragment {
 
     public static final String TAG = RepoFragment.class.getSimpleName();
 
+
     private FragmentRepoBinding binding;
 
-    private GithubViewModelFactory factory = new GithubViewModelFactory();
+    @Inject
+    GithubViewModelFactory factory;
     private RepoViewModel viewModel;
 
     private RepoAdapter repoAdapter = new RepoAdapter(new ArrayList<Repo>());
@@ -112,5 +116,11 @@ public class RepoFragment extends Fragment {
                     (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
     }
 }

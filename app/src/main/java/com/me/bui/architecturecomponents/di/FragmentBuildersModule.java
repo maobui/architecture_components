@@ -1,6 +1,6 @@
 package com.me.bui.architecturecomponents.di;
 
-import com.me.bui.architecturecomponents.MainActivity;
+import com.me.bui.architecturecomponents.ui.RepoFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -10,8 +10,7 @@ import dagger.android.ContributesAndroidInjector;
  */
 
 @Module
-public abstract class BuildersModule {
-
+public abstract class FragmentBuildersModule {
     @ContributesAndroidInjector
-    abstract MainActivity contributeMainActivity();
+    abstract RepoFragment contributeRepoFragment();
 }
