@@ -1,6 +1,7 @@
 package com.me.bui.architecturecomponents.ui;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -20,14 +21,11 @@ import com.me.bui.architecturecomponents.data.model.Repo;
 import com.me.bui.architecturecomponents.data.model.RepoSearchResponse;
 import com.me.bui.architecturecomponents.databinding.FragmentRepoBinding;
 import com.me.bui.architecturecomponents.di.Injectable;
-import com.me.bui.architecturecomponents.viewmodel.GithubViewModelFactory;
 import com.me.bui.architecturecomponents.viewmodel.RepoViewModel;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
 
 /**
  * Created by mao.bui on 9/1/2018.
@@ -40,7 +38,7 @@ public class RepoFragment extends Fragment implements Injectable{
     private FragmentRepoBinding binding;
 
     @Inject
-    GithubViewModelFactory factory;
+    ViewModelProvider.Factory factory;
     private RepoViewModel viewModel;
 
     private RepoAdapter repoAdapter = new RepoAdapter(new ArrayList<Repo>());

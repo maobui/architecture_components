@@ -10,11 +10,10 @@ import android.text.TextUtils;
 
 import com.me.bui.architecturecomponents.api.ApiResponse;
 import com.me.bui.architecturecomponents.data.DataModel;
-import com.me.bui.architecturecomponents.data.model.Repo;
 import com.me.bui.architecturecomponents.data.model.RepoSearchResponse;
 import com.me.bui.architecturecomponents.util.AbsentLiveData;
 
-import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by mao.bui on 9/1/2018.
@@ -29,6 +28,7 @@ public class RepoViewModel extends ViewModel {
 
     private DataModel mDataModel;
 
+    @Inject
     public RepoViewModel(DataModel dataModel) {
         super();
         mDataModel = dataModel;
