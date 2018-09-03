@@ -19,6 +19,7 @@ import com.me.bui.architecturecomponents.api.ApiResponse;
 import com.me.bui.architecturecomponents.data.model.Repo;
 import com.me.bui.architecturecomponents.data.model.RepoSearchResponse;
 import com.me.bui.architecturecomponents.databinding.FragmentRepoBinding;
+import com.me.bui.architecturecomponents.di.Injectable;
 import com.me.bui.architecturecomponents.viewmodel.GithubViewModelFactory;
 import com.me.bui.architecturecomponents.viewmodel.RepoViewModel;
 
@@ -31,7 +32,7 @@ import dagger.android.support.AndroidSupportInjection;
 /**
  * Created by mao.bui on 9/1/2018.
  */
-public class RepoFragment extends Fragment {
+public class RepoFragment extends Fragment implements Injectable{
 
     public static final String TAG = RepoFragment.class.getSimpleName();
 
@@ -116,11 +117,5 @@ public class RepoFragment extends Fragment {
                     (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
     }
 }

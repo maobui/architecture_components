@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.me.bui.architecturecomponents.api.GithubService;
+import com.me.bui.architecturecomponents.di.Injectable;
 import com.me.bui.architecturecomponents.ui.RepoFragment;
 
 import javax.inject.Inject;
@@ -15,14 +16,13 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
-public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector{
+public class MainActivity extends AppCompatActivity implements Injectable, HasSupportFragmentInjector{
 
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         String tag = RepoFragment.TAG;
