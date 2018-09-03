@@ -82,12 +82,11 @@ public class RepoFragment extends Fragment {
         viewModel.getRepos().observe(this, new Observer<ApiResponse<RepoSearchResponse>>() {
             @Override
             public void onChanged(@Nullable ApiResponse<RepoSearchResponse> response) {
-                int code = response.code;
-                RepoSearchResponse data = response.body;
-                String msg = response.errorMessage;
-
-                if(data != null) {
-                    repoAdapter.swapItems(data.getItems());
+                if(response.isSuccessful()) {
+                    repoAdapter.swapItems(response.body.getItems());
+                } else {
+                    String errorMsg = response.errorMessage;
+                    // Show error here.
                 }
                 viewModel.isLoading.set(false);
             }

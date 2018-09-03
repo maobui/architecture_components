@@ -1,5 +1,7 @@
 package com.me.bui.architecturecomponents.api;
 
+import android.arch.lifecycle.LiveData;
+
 import com.me.bui.architecturecomponents.data.model.RepoSearchResponse;
 
 import retrofit2.Call;
@@ -11,5 +13,5 @@ import retrofit2.http.Query;
  */
 public interface GithubService {
     @GET("search/repositories")
-    Call<RepoSearchResponse> searchRepos(@Query("q") String query);
+    LiveData<ApiResponse<RepoSearchResponse>> searchRepos(@Query("q") String query);
 }
