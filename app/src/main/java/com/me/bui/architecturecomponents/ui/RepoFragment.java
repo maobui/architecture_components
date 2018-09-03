@@ -15,7 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.me.bui.architecturecomponents.api.ApiResponse;
 import com.me.bui.architecturecomponents.data.model.Repo;
+import com.me.bui.architecturecomponents.data.model.RepoSearchResponse;
 import com.me.bui.architecturecomponents.databinding.FragmentRepoBinding;
 import com.me.bui.architecturecomponents.viewmodel.GithubViewModelFactory;
 import com.me.bui.architecturecomponents.viewmodel.RepoViewModel;
@@ -77,11 +79,15 @@ public class RepoFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(this, factory).get(RepoViewModel.class);
         binding.setViewModel(viewModel);
-        viewModel.getRepos().observe(this, new Observer<List<Repo>>() {
+        viewModel.getRepos().observe(this, new Observer<ApiResponse<RepoSearchResponse>>() {
             @Override
-            public void onChanged(@Nullable List<Repo> repos) {
-                if(repos != null) {
-                    repoAdapter.swapItems(repos);
+            public void onChanged(@Nullable ApiResponse<RepoSearchResponse> response) {
+                int code = response.code;
+                RepoSearchResponse data = response.body;
+                String msg = response.errorMessage;
+
+                if(data != null) {
+                    repoAdapter.swapItems(data.getItems());
                 }
                 viewModel.isLoading.set(false);
             }

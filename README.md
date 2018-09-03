@@ -1,6 +1,8 @@
 
 # Architecture Components
 
+![Link](https://ithelp.ithome.com.tw/users/20103849/ironman/1573?page=1)
+
 ## The library that will be used:
 
 ### Android Architecture Components
