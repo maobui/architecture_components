@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.me.bui.architecturecomponents.api.ApiResponse;
 import com.me.bui.architecturecomponents.data.model.Repo;
@@ -82,13 +83,17 @@ public class RepoFragment extends Fragment {
         viewModel.getRepos().observe(this, new Observer<ApiResponse<RepoSearchResponse>>() {
             @Override
             public void onChanged(@Nullable ApiResponse<RepoSearchResponse> response) {
+                viewModel.isLoading.set(false);
+                if(response == null) {
+                    repoAdapter.swapItems(null);
+                    return;
+                }
                 if(response.isSuccessful()) {
                     repoAdapter.swapItems(response.body.getItems());
                 } else {
                     String errorMsg = response.errorMessage;
-                    // Show error here.
+                    Toast.makeText(getContext(), errorMsg, Toast.LENGTH_LONG).show();
                 }
-                viewModel.isLoading.set(false);
             }
         });
     }
