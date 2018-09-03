@@ -1,5 +1,8 @@
 package com.me.bui.architecturecomponents.data.model;
 
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
@@ -7,6 +10,9 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by mao.bui on 9/1/2018.
  */
+
+@Entity(indices = {@Index("id"), @Index("owner_login")},
+        primaryKeys = {"name", "owner_login"})
 public class Repo {
 
     public final int id;
@@ -25,6 +31,7 @@ public class Repo {
     public final int stars;
 
     @SerializedName("owner")
+    @Embedded(prefix = "owner_")
     @NonNull
     public final Owner owner;
 

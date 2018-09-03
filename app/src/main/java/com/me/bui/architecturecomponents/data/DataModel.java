@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import com.me.bui.architecturecomponents.api.ApiResponse;
 import com.me.bui.architecturecomponents.api.GithubService;
 import com.me.bui.architecturecomponents.api.RetrofitManager;
+import com.me.bui.architecturecomponents.data.db.RepoDao;
 import com.me.bui.architecturecomponents.data.model.Repo;
 import com.me.bui.architecturecomponents.data.model.RepoSearchResponse;
 
@@ -27,10 +28,13 @@ import retrofit2.Response;
 @Singleton
 public class DataModel {
 
+    private RepoDao repoDao;
+
     private GithubService githubService;
 
     @Inject
-    public DataModel(GithubService githubService) {
+    public DataModel(RepoDao repoDao, GithubService githubService) {
+        this.repoDao = repoDao;
         this.githubService = githubService;
     }
 
