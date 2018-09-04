@@ -1,7 +1,11 @@
-package com.me.bui.architecturecomponents.data.model;
+package com.me.bui.architecturecomponents.api;
+
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
+import com.me.bui.architecturecomponents.data.model.Repo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,5 +31,14 @@ public class RepoSearchResponse {
 
     public void setItems(List<Repo> items) {
         this.items = items;
+    }
+
+    @NonNull
+    public List<Integer> getRepoIds() {
+        List<Integer> repoIds = new ArrayList<>();
+        for (Repo repo : items) {
+            repoIds.add(repo.id);
+        }
+        return repoIds;
     }
 }

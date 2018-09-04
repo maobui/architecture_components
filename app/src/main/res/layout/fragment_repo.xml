@@ -5,9 +5,12 @@
 
     <data>
 
+        <import type="android.view.View" />
+        <import type="com.me.bui.architecturecomponents.data.model.Status" />
+
         <variable
-            name="viewModel"
-            type="com.me.bui.architecturecomponents.viewmodel.RepoViewModel" />
+            name="resource"
+            type="com.me.bui.architecturecomponents.data.model.Resource" />
 
     </data>
 
@@ -46,7 +49,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textInputLayout"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
             tools:listitem="@layout/item_repo" />
 
         <ProgressBar
@@ -57,7 +60,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:visibleGone="@{viewModel.isLoading}" />
+            app:visibleGone="@{resource.status == Status.LOADING}" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>

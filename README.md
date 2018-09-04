@@ -13,3 +13,8 @@
 #### RxJava 2
 #### Espresso for UI tests
 #### Mockito for mocking in tests 
+
+
+![](/images/final-architecture.png)
+
+![](/images/network-bound-resource.png)

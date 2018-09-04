@@ -14,16 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
-import com.me.bui.architecturecomponents.api.ApiResponse;
+import com.android.databinding.library.baseAdapters.BR;
 import com.me.bui.architecturecomponents.data.model.Repo;
-import com.me.bui.architecturecomponents.data.model.RepoSearchResponse;
+import com.me.bui.architecturecomponents.data.model.Resource;
 import com.me.bui.architecturecomponents.databinding.FragmentRepoBinding;
 import com.me.bui.architecturecomponents.di.Injectable;
 import com.me.bui.architecturecomponents.viewmodel.RepoViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -82,21 +82,13 @@ public class RepoFragment extends Fragment implements Injectable{
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(this, factory).get(RepoViewModel.class);
-        binding.setViewModel(viewModel);
-        viewModel.getRepos().observe(this, new Observer<ApiResponse<RepoSearchResponse>>() {
+
+        viewModel.getRepos().observe(this, new Observer<Resource<List<Repo>>>() {
             @Override
-            public void onChanged(@Nullable ApiResponse<RepoSearchResponse> response) {
-                viewModel.isLoading.set(false);
-                if(response == null) {
-                    repoAdapter.swapItems(null);
-                    return;
-                }
-                if(response.isSuccessful()) {
-                    repoAdapter.swapItems(response.body.getItems());
-                } else {
-                    String errorMsg = response.errorMessage;
-                    Toast.makeText(getContext(), errorMsg, Toast.LENGTH_LONG).show();
-                }
+            public void onChanged(@Nullable Resource<List<Repo>> resource) {
+                binding.setResource(resource);
+                binding.executePendingBindings();
+                repoAdapter.swapItems(resource.data);
             }
         });
     }
@@ -104,7 +96,6 @@ public class RepoFragment extends Fragment implements Injectable{
     private void doSearch() {
         String query = binding.edtQuery.getText().toString();
         viewModel.searchRepo(query);
-        viewModel.isLoading.set(true);
         dismissKeyboard();
     }
 

@@ -2,9 +2,6 @@ package com.me.bui.architecturecomponents.api;
 
 import android.arch.lifecycle.LiveData;
 
-import com.me.bui.architecturecomponents.data.model.RepoSearchResponse;
-
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 

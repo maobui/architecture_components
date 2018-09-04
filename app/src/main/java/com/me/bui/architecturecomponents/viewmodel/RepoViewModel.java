@@ -5,13 +5,14 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
-import android.databinding.ObservableBoolean;
 import android.text.TextUtils;
 
-import com.me.bui.architecturecomponents.api.ApiResponse;
-import com.me.bui.architecturecomponents.data.DataModel;
-import com.me.bui.architecturecomponents.data.model.RepoSearchResponse;
+import com.me.bui.architecturecomponents.data.RepoRepository;
+import com.me.bui.architecturecomponents.data.model.Repo;
+import com.me.bui.architecturecomponents.data.model.Resource;
 import com.me.bui.architecturecomponents.util.AbsentLiveData;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -20,31 +21,30 @@ import javax.inject.Inject;
  */
 public class RepoViewModel extends ViewModel {
 
-    public final ObservableBoolean isLoading = new ObservableBoolean(false);
 
     private final MutableLiveData<String> query = new MutableLiveData<>();
 
-    private final LiveData<ApiResponse<RepoSearchResponse>> repos;
+    private final LiveData<Resource<List<Repo>>> repos;
 
-    private DataModel mDataModel;
+    private RepoRepository mRepoRepository;
 
     @Inject
-    public RepoViewModel(DataModel dataModel) {
+    public RepoViewModel(RepoRepository repoRepository) {
         super();
-        mDataModel = dataModel;
-        repos = Transformations.switchMap(query, new Function<String, LiveData<ApiResponse<RepoSearchResponse>>>() {
+        mRepoRepository = repoRepository;
+        repos = Transformations.switchMap(query, new Function<String, LiveData<Resource<List<Repo>>>>() {
             @Override
-            public LiveData<ApiResponse<RepoSearchResponse>> apply(String input) {
+            public LiveData<Resource<List<Repo>>> apply(String input) {
                 if(TextUtils.isEmpty(input)) {
                     return AbsentLiveData.create();
                 } else {
-                    return mDataModel.searchRepo(input);
+                    return mRepoRepository.search(input);
                 }
             }
         });
     }
 
-    public LiveData<ApiResponse<RepoSearchResponse>> getRepos() {
+    public LiveData<Resource<List<Repo>>> getRepos() {
         return repos;
     }
 
