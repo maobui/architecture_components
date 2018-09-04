@@ -39,7 +39,7 @@ public abstract class RepoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insert(RepoSearchResult result);
 
-    @Query("SELECT * FROM RepoSearchResult WHERE query = :query")
+    @Query("SELECT * FROM RepoSearchResult WHERE `query` = :query")
     public abstract LiveData<RepoSearchResult> search(String query);
 
     public LiveData<List<Repo>> loadOrdered(List<Integer> repoIds) {
