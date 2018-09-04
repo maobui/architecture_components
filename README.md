@@ -17,4 +17,7 @@
 
 ![](/images/final-architecture.png)
 
+
+## NetworkBoundResource
+
 ![](/images/network-bound-resource.png)

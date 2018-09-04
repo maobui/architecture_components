@@ -15,6 +15,8 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.me.bui.architecturecomponents.data.db.GithubDb.MIGRATION_1_2;
+
 /**
  * Created by mao.bui on 9/3/2018.
  */
@@ -36,7 +38,9 @@ class AppModule {
     @Provides
     @Singleton
     GithubDb provideDb(GithubApp app) {
-        return Room.databaseBuilder(app, GithubDb.class,"github.db").build();
+        return Room.databaseBuilder(app, GithubDb.class,"github.db")
+                .addMigrations(MIGRATION_1_2)
+                .build();
     }
     @Provides
     @Singleton
