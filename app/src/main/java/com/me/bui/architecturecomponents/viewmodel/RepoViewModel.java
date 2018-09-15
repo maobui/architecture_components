@@ -22,7 +22,7 @@ public class RepoViewModel extends ViewModel {
 
     private final MutableLiveData<String> query = new MutableLiveData<>();
 
-    private final LiveData<Resource<PagedList<Repo>>> repos;
+    public final LiveData<Resource<PagedList<Repo>>> repos;
 
     private RepoRepository mRepoRepository;
 
