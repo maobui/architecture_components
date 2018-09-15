@@ -1,26 +1,25 @@
 package com.me.bui.architecturecomponents.ui;
 
+import android.arch.paging.PagedListAdapter;
+import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.me.bui.architecturecomponents.data.model.Repo;
 import com.me.bui.architecturecomponents.databinding.ItemRepoBinding;
 
-import java.util.List;
 import java.util.Objects;
+
 
 /**
  * Created by mao.bui on 9/1/2018.
  */
-public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder> {
+public class RepoAdapter extends PagedListAdapter<Repo, RepoAdapter.RepoViewHolder> {
 
-    private List<Repo> items;
-
-    RepoAdapter(List<Repo> items) {
-        this.items = items;
+    RepoAdapter() {
+        super(DIFF_CALLBACK);
     }
 
     class RepoViewHolder extends RecyclerView.ViewHolder{
@@ -47,60 +46,19 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder
 
     @Override
     public void onBindViewHolder(RepoViewHolder holder, int position) {
-        Repo repo = items.get(position);
+        Repo repo = getItem(position);
         holder.bind(repo);
     }
 
-    @Override
-    public int getItemCount() {
-        return items == null ? 0 : items.size();
-    }
-
-    void swapItems(List<Repo> newItems) {
-        if (newItems == null) {
-            int oldSize = this.items.size();
-            this.items.clear();
-            notifyItemRangeRemoved(0, oldSize);
-        } else {
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new RepoDiffCallback(this.items, newItems));
-            this.items.clear();
-            this.items.addAll(newItems);
-            result.dispatchUpdatesTo(this);
-        }
-    }
-
-    private class RepoDiffCallback extends DiffUtil.Callback {
-
-        private List<Repo> mOldList;
-        private List<Repo> mNewList;
-
-        RepoDiffCallback(List<Repo> oldList, List<Repo> newList) {
-            this.mOldList = oldList;
-            this.mNewList = newList;
-        }
-
+    private static final DiffUtil.ItemCallback<Repo> DIFF_CALLBACK = new DiffUtil.ItemCallback<Repo>() {
         @Override
-        public int getOldListSize() {
-            return mOldList != null ? mOldList.size() : 0;
+        public boolean areItemsTheSame(@NonNull Repo oldRepo, @NonNull Repo newRepo) {
+            return Objects.equals(oldRepo.id, newRepo.id);
         }
-
         @Override
-        public int getNewListSize() {
-            return mNewList != null ? mNewList.size() : 0;
+        public boolean areContentsTheSame(@NonNull Repo oldRepo, @NonNull Repo newRepo) {
+            return Objects.equals(oldRepo.name, newRepo.name) &&
+                    Objects.equals(oldRepo.description, newRepo.description);
         }
-
-        @Override
-        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            int oldId = mOldList.get(oldItemPosition).id;
-            int newId = mNewList.get(newItemPosition).id;
-            return Objects.equals(oldId, newId);
-        }
-
-        @Override
-        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            Repo oldRepo = mOldList.get(oldItemPosition);
-            Repo newRepo = mNewList.get(newItemPosition);
-            return Objects.equals(oldRepo, newRepo);
-        }
-    }
+    };
 }

@@ -5,14 +5,12 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
-import android.text.TextUtils;
+import android.arch.paging.PagedList;
 
 import com.me.bui.architecturecomponents.data.RepoRepository;
 import com.me.bui.architecturecomponents.data.model.Repo;
 import com.me.bui.architecturecomponents.data.model.Resource;
 import com.me.bui.architecturecomponents.util.AbsentLiveData;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -24,7 +22,7 @@ public class RepoViewModel extends ViewModel {
 
     private final MutableLiveData<String> query = new MutableLiveData<>();
 
-    private final LiveData<Resource<List<Repo>>> repos;
+    private final LiveData<Resource<PagedList<Repo>>> repos;
 
     private RepoRepository mRepoRepository;
 
@@ -32,9 +30,9 @@ public class RepoViewModel extends ViewModel {
     public RepoViewModel(RepoRepository repoRepository) {
         super();
         mRepoRepository = repoRepository;
-        repos = Transformations.switchMap(query, new Function<String, LiveData<Resource<List<Repo>>>>() {
+        repos = Transformations.switchMap(query, new Function<String, LiveData<Resource<PagedList<Repo>>>>() {
             @Override
-            public LiveData<Resource<List<Repo>>> apply(String input) {
+            public LiveData<Resource<PagedList<Repo>>> apply(String input) {
                 if(input == null || input.isEmpty()) {
                     return AbsentLiveData.create();
                 } else {
@@ -44,7 +42,7 @@ public class RepoViewModel extends ViewModel {
         });
     }
 
-    public LiveData<Resource<List<Repo>>> getRepos() {
+    public LiveData<Resource<PagedList<Repo>>> getRepos() {
         return repos;
     }
 

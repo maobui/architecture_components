@@ -3,6 +3,7 @@ package com.me.bui.architecturecomponents.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,15 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.android.databinding.library.baseAdapters.BR;
 import com.me.bui.architecturecomponents.data.model.Repo;
 import com.me.bui.architecturecomponents.data.model.Resource;
 import com.me.bui.architecturecomponents.databinding.FragmentRepoBinding;
 import com.me.bui.architecturecomponents.di.Injectable;
 import com.me.bui.architecturecomponents.viewmodel.RepoViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,7 +38,7 @@ public class RepoFragment extends Fragment implements Injectable{
     ViewModelProvider.Factory factory;
     private RepoViewModel viewModel;
 
-    private RepoAdapter repoAdapter = new RepoAdapter(new ArrayList<Repo>());
+    private RepoAdapter repoAdapter = new RepoAdapter();
 
     public static RepoFragment newInstance() {
         return new RepoFragment();
@@ -83,12 +80,12 @@ public class RepoFragment extends Fragment implements Injectable{
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(this, factory).get(RepoViewModel.class);
 
-        viewModel.getRepos().observe(this, new Observer<Resource<List<Repo>>>() {
+        viewModel.getRepos().observe(this, new Observer<Resource<PagedList<Repo>>>() {
             @Override
-            public void onChanged(@Nullable Resource<List<Repo>> resource) {
+            public void onChanged(@Nullable Resource<PagedList<Repo>> resource) {
                 binding.setResource(resource);
                 binding.executePendingBindings();
-                repoAdapter.swapItems(resource.data);
+                repoAdapter.submitList(resource.data);
             }
         });
     }
