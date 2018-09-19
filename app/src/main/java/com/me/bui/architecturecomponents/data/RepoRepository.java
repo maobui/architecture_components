@@ -15,12 +15,17 @@ import com.me.bui.architecturecomponents.data.db.RepoDao;
 import com.me.bui.architecturecomponents.data.model.Repo;
 import com.me.bui.architecturecomponents.data.model.RepoSearchResult;
 import com.me.bui.architecturecomponents.data.model.Resource;
+import com.me.bui.architecturecomponents.data.model.User;
 import com.me.bui.architecturecomponents.util.AbsentLiveData;
 
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import retrofit2.Response;
 
 /**
  * Created by mao.bui on 9/3/2018.
@@ -76,5 +81,13 @@ public class RepoRepository {
                 repoDao.insert(repoSearchResult);
             }
         }.asLiveData();
+    }
+
+    public Observable<Response<RepoSearchResponse>> searchRepoRX(String query) {
+        return githubService.searchReposRX(query);
+    }
+
+    public Observable<Response<User>> getUser(String login) {
+        return githubService.getUser(login);
     }
 }

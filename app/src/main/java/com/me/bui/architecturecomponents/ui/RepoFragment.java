@@ -10,19 +10,36 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.me.bui.architecturecomponents.api.RepoSearchResponse;
+import com.me.bui.architecturecomponents.api.RepoSearchResponseAndUser;
 import com.me.bui.architecturecomponents.data.model.Repo;
 import com.me.bui.architecturecomponents.data.model.Resource;
+import com.me.bui.architecturecomponents.data.model.User;
 import com.me.bui.architecturecomponents.databinding.FragmentRepoBinding;
 import com.me.bui.architecturecomponents.di.Injectable;
 import com.me.bui.architecturecomponents.viewmodel.RepoViewModel;
 
+import java.util.List;
+
 import javax.inject.Inject;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 
 /**
  * Created by mao.bui on 9/1/2018.
@@ -39,6 +56,8 @@ public class RepoFragment extends Fragment implements Injectable{
     private RepoViewModel viewModel;
 
     private RepoAdapter repoAdapter = new RepoAdapter();
+
+    private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
     public static RepoFragment newInstance() {
         return new RepoFragment();
@@ -89,6 +108,12 @@ public class RepoFragment extends Fragment implements Injectable{
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mCompositeDisposable.dispose();
+    }
+
     private void doSearch() {
         String query = binding.edtQuery.getText().toString();
         viewModel.searchRepo(query);
@@ -102,5 +127,63 @@ public class RepoFragment extends Fragment implements Injectable{
                     (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    private void flatMapExample() {
+        String query = "android";
+        mCompositeDisposable.add(viewModel.searchRepoRX(query)
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Function<Response<RepoSearchResponse>, ObservableSource<Repo>>() {
+                    @Override
+                    public ObservableSource<Repo> apply(Response<RepoSearchResponse> response) throws Exception {
+                        List<Repo> repos = response.body().getItems();
+                        return Observable.fromIterable(repos);
+                    }
+                })
+                .flatMap(new Function<Repo, ObservableSource<Response<User>>>() {
+                    @Override
+                    public ObservableSource<Response<User>> apply(Repo repo) throws Exception {
+                        return viewModel.getUser(repo.owner.login);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<Response<User>>() {
+                    @Override
+                    public void onNext(Response<User> response) {
+                        Log.d(TAG, "name " + response.body().name);
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+                    @Override
+                    public void onComplete() {
+                    }
+                }));
+    }
+    private void zipExample() {
+        Observable.zip(viewModel.searchRepoRX("google"), viewModel.getUser("google"),
+                new BiFunction<Response<RepoSearchResponse>, Response<User>, RepoSearchResponseAndUser>() {
+                    @Override
+                    public RepoSearchResponseAndUser apply(Response<RepoSearchResponse> response,
+                                                           Response<User> response2) throws Exception {
+                        RepoSearchResponse repoSearchResponse = response.body();
+                        User user = response2.body();
+                        return new RepoSearchResponseAndUser(repoSearchResponse, user);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableObserver<RepoSearchResponseAndUser>() {
+                    @Override
+                    public void onNext(RepoSearchResponseAndUser repoSearchResponseAndUser) {
+                        Log.d(TAG, "RepoSearchResponseAndUser name " + (repoSearchResponseAndUser.user == null ? "" : repoSearchResponseAndUser.user.name));
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
 }

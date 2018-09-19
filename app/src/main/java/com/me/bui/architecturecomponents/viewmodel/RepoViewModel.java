@@ -7,12 +7,18 @@ import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 import android.arch.paging.PagedList;
 
+import com.me.bui.architecturecomponents.api.RepoSearchResponse;
 import com.me.bui.architecturecomponents.data.RepoRepository;
 import com.me.bui.architecturecomponents.data.model.Repo;
 import com.me.bui.architecturecomponents.data.model.Resource;
+import com.me.bui.architecturecomponents.data.model.User;
 import com.me.bui.architecturecomponents.util.AbsentLiveData;
 
 import javax.inject.Inject;
+
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import retrofit2.Response;
 
 /**
  * Created by mao.bui on 9/1/2018.
@@ -48,5 +54,13 @@ public class RepoViewModel extends ViewModel {
 
     public void searchRepo(String input) {
         query.setValue(input);
+    }
+
+    public Observable<Response<RepoSearchResponse>> searchRepoRX(String query) {
+        return mRepoRepository.searchRepoRX(query);
+    }
+
+    public Observable<Response<User>> getUser(String login) {
+        return mRepoRepository.getUser(login);
     }
 }
