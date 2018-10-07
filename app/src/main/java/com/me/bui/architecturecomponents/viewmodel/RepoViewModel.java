@@ -10,12 +10,17 @@ import android.arch.paging.PagedList;
 import com.me.bui.architecturecomponents.api.RepoSearchResponse;
 import com.me.bui.architecturecomponents.data.RepoRepository;
 import com.me.bui.architecturecomponents.data.model.Repo;
+import com.me.bui.architecturecomponents.data.model.RepoSearchResult;
 import com.me.bui.architecturecomponents.data.model.Resource;
 import com.me.bui.architecturecomponents.data.model.User;
 import com.me.bui.architecturecomponents.util.AbsentLiveData;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import retrofit2.Response;
@@ -62,5 +67,15 @@ public class RepoViewModel extends ViewModel {
 
     public Observable<Response<User>> getUser(String login) {
         return mRepoRepository.getUser(login);
+    }
+
+    public Flowable<RepoSearchResult> rxSearch(String query) {
+        return mRepoRepository.rxSearch(query);
+    }
+    public Flowable<List<Repo>> rxLoadById(List<Integer> repoIds) {
+        return mRepoRepository.rxLoadById(repoIds);
+    }
+    public Maybe<RepoSearchResult> rxSearchSync(String query) {
+        return mRepoRepository.rxSearchSync(query);
     }
 }

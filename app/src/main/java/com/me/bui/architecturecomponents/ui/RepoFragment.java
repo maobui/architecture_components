@@ -20,11 +20,14 @@ import android.view.inputmethod.InputMethodManager;
 import com.me.bui.architecturecomponents.api.RepoSearchResponse;
 import com.me.bui.architecturecomponents.api.RepoSearchResponseAndUser;
 import com.me.bui.architecturecomponents.data.model.Repo;
+import com.me.bui.architecturecomponents.data.model.RepoSearchResult;
 import com.me.bui.architecturecomponents.data.model.Resource;
 import com.me.bui.architecturecomponents.data.model.User;
 import com.me.bui.architecturecomponents.databinding.FragmentRepoBinding;
 import com.me.bui.architecturecomponents.di.Injectable;
 import com.me.bui.architecturecomponents.viewmodel.RepoViewModel;
+
+import org.reactivestreams.Publisher;
 
 import java.util.List;
 
@@ -37,8 +40,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
-import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 import retrofit2.Response;
 
 /**
@@ -55,7 +58,8 @@ public class RepoFragment extends Fragment implements Injectable{
     ViewModelProvider.Factory factory;
     private RepoViewModel viewModel;
 
-    private RepoAdapter repoAdapter = new RepoAdapter();
+    private RepoPageAdapter mRepoPageAdapter = new RepoPageAdapter();
+    private RepoAdapter mRepoAdapter = new RepoAdapter();
 
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
@@ -89,7 +93,7 @@ public class RepoFragment extends Fragment implements Injectable{
 
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
-        binding.recyclerView.setAdapter(repoAdapter);
+        binding.recyclerView.setAdapter(mRepoPageAdapter);
 
         return binding.getRoot();
     }
@@ -103,7 +107,7 @@ public class RepoFragment extends Fragment implements Injectable{
         viewModel.getRepos().observe(this, new Observer<Resource<PagedList<Repo>>>() {
             @Override
             public void onChanged(@Nullable Resource<PagedList<Repo>> resource) {
-                repoAdapter.submitList(resource.data);
+                mRepoPageAdapter.submitList(resource.data);
             }
         });
     }
@@ -186,4 +190,42 @@ public class RepoFragment extends Fragment implements Injectable{
                     }
                 });
     }
+
+    private void rxDoSearch() {
+        binding.recyclerView.setAdapter(mRepoAdapter);
+        String query = binding.edtQuery.getText().toString();
+        mCompositeDisposable.add(viewModel.rxSearch(query)
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Function<RepoSearchResult, Publisher<List<Repo>>>() {
+                    @Override
+                    public Publisher<List<Repo>> apply(RepoSearchResult result) throws Exception {
+                        Log.d(TAG, "apply " + result.totalCount);
+                        return viewModel.rxLoadById(result.repoIds);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSubscriber<List<Repo>>() {
+                    @Override
+                    public void onNext(List<Repo> repos) {
+                        mRepoAdapter.swapItems(repos);
+                        Log.d(TAG, "onNext " + repos.size());
+                    }
+                    @Override
+                    public void onError(Throwable t) {
+                        Log.d(TAG, "onError " + t.toString());
+                    }
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete " );
+                    }
+                })
+        );
+        dismissKeyboard();
+    }
+    private void syncQueryExample() {
+        RepoSearchResult result = viewModel.rxSearchSync("android")
+                .subscribeOn(Schedulers.io())
+                .blockingGet();
+    }
+
 }

@@ -23,6 +23,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import retrofit2.Response;
@@ -89,5 +91,17 @@ public class RepoRepository {
 
     public Observable<Response<User>> getUser(String login) {
         return githubService.getUser(login);
+    }
+
+    public Flowable<RepoSearchResult> rxSearch(String query) {
+        return repoDao.rxSearch(query);
+    }
+
+    public Flowable<List<Repo>> rxLoadById(List<Integer> repoIds) {
+        return repoDao.rxLoadById(repoIds);
+    }
+
+    public Maybe<RepoSearchResult> rxSearchSync(String query) {
+        return repoDao.rxSearchSync(query);
     }
 }

@@ -12,6 +12,9 @@ import com.me.bui.architecturecomponents.data.model.RepoSearchResult;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+
 
 /**
  * Created by mao.bui on 9/3/2018.
@@ -42,6 +45,15 @@ public abstract class RepoDao {
     @Query("SELECT * FROM Repo WHERE id in (:repoIds)")
     public abstract DataSource.Factory<Integer, Repo> loadById(List<Integer> repoIds);
 
-    @Query("SELECT * FROM RepoSearchResult WHERE query = :query")
+    @Query("SELECT * FROM RepoSearchResult WHERE `query` = :query")
     public abstract RepoSearchResult findSearchResult(String query);
+
+    @Query("SELECT * FROM RepoSearchResult WHERE `query` = :query")
+    public abstract Flowable<RepoSearchResult> rxSearch(String query);
+
+    @Query("SELECT * FROM Repo WHERE id in (:repoIds)")
+    public abstract Flowable<List<Repo>> rxLoadById(List<Integer> repoIds);
+
+    @Query("SELECT * FROM RepoSearchResult WHERE `query` = :query")
+    public abstract Maybe<RepoSearchResult> rxSearchSync(String query);
 }
