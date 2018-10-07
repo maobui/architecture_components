@@ -21,3 +21,7 @@
 ## NetworkBoundResource
 
 ![](/images/network-bound-resource.png)
+
+## Live data vs RxJava.
+
+![](/images/live_data_vs_rxjava.png)

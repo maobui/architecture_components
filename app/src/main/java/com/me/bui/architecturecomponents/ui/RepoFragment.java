@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.me.bui.architecturecomponents.api.RepoSearchResponse;
 import com.me.bui.architecturecomponents.api.RepoSearchResponseAndUser;
 import com.me.bui.architecturecomponents.data.model.Repo;
@@ -88,6 +89,8 @@ public class RepoFragment extends Fragment implements Injectable{
             @Override
             public void onClick(View view) {
                 doSearch();
+                // Test Crashlytics.
+//                Crashlytics.getInstance().crash();
             }
         });
 
