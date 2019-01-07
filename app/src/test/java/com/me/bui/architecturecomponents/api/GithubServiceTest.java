@@ -57,8 +57,8 @@ public class GithubServiceTest {
         ApiResponse<RepoSearchResponse> response = getValue(
                 githubService.searchRepos("foo"));
         assertThat(response, notNullValue());
-        assertThat(response.body.getTotal(), is(76));
-        assertThat(response.body.getItems().size(), is(30));
+        assertThat(response.getBody().getTotal(), is(76));
+        assertThat(response.getBody().getItems().size(), is(30));
     }
 
     private void enqueueResponse(String fileName) throws IOException {

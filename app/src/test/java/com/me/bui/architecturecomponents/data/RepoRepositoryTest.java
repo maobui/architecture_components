@@ -59,7 +59,7 @@ public class RepoRepositoryTest {
         when(repoDao.search("foo")).thenReturn(dbSearchResult);
         Observer<Resource<List<Repo>>> observer = mock(Observer.class);
         repository.search("foo").observeForever(observer);
-        verify(observer).onChanged(Resource.<List<Repo>>loading(null));
+        verify(observer).onChanged(Resource.Companion.<List<Repo>>loading(null));
         verifyNoMoreInteractions(githubService);
         reset(observer);
         List<Integer> ids = Arrays.asList(1, 2);
@@ -69,7 +69,7 @@ public class RepoRepositoryTest {
         dbSearchResult.postValue(dbResult);
         List<Repo> repoList = new ArrayList<>();
         repos.postValue(repoList);
-        verify(observer).onChanged(Resource.success(repoList));
+        verify(observer).onChanged(Resource.Companion.success(repoList));
         verifyNoMoreInteractions(githubService);
     }
     @Test
@@ -78,7 +78,7 @@ public class RepoRepositoryTest {
         when(repoDao.search("foo")).thenReturn(dbSearchResult);
         Observer<Resource<List<Repo>>> observer = mock(Observer.class);
         repository.search("foo").observeForever(observer);
-        verify(observer).onChanged(Resource.<List<Repo>>loading(null));
+        verify(observer).onChanged(Resource.Companion.<List<Repo>>loading(null));
         verifyNoMoreInteractions(githubService);
         reset(observer);
         MutableLiveData<ApiResponse<RepoSearchResponse>> callLiveData = new MutableLiveData<>();
@@ -89,12 +89,12 @@ public class RepoRepositoryTest {
     }
     @Test
     public void search_fromServer_error() {
-        when(repoDao.search("foo")).thenReturn(AbsentLiveData.<RepoSearchResult>create());
+        when(repoDao.search("foo")).thenReturn(AbsentLiveData.Companion.<RepoSearchResult>create());
         MutableLiveData<ApiResponse<RepoSearchResponse>> apiResponse = new MutableLiveData<>();
         when(githubService.searchRepos("foo")).thenReturn(apiResponse);
         Observer<Resource<List<Repo>>> observer = mock(Observer.class);
         repository.search("foo").observeForever(observer);
         apiResponse.postValue(new ApiResponse<RepoSearchResponse>(new Exception("idk")));
-        verify(observer).onChanged(Resource.<List<Repo>>error(null, "idk"));
+        verify(observer).onChanged(Resource.Companion.<List<Repo>>error(null, "idk"));
     }
 }
